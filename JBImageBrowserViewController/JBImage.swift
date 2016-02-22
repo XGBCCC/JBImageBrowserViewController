@@ -21,19 +21,19 @@ public struct JBImage {
     public var filePathURL:NSURL?
     public let sourceType:JBImageSourceType
     
-    init(_url:NSURL!){
-        imageURL = _url
-        sourceType = .URL
+    init(url:NSURL!){
+        self.imageURL = url
+        self.sourceType = .URL
     }
     
-    init(_image:UIImage!){
-        image = _image
-        sourceType = .Image
+    init(image:UIImage!){
+        self.image = image
+        self.sourceType = .Image
     }
     
-    init(_filePathURL:NSURL!){
-        filePathURL = _filePathURL
-        sourceType = .FilePath
+    init(filePathURL:NSURL!){
+        self.filePathURL = filePathURL
+        self.sourceType = .FilePath
     }
     
     
