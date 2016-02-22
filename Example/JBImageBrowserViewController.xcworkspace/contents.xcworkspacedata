@@ -2,7 +2,7 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:/Users/Eric/Me/Demo/JBImagesBrowserViewController/JBImageBrowserViewController.xcodeproj">
+      location = "group:JBImageBrowserViewController.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">

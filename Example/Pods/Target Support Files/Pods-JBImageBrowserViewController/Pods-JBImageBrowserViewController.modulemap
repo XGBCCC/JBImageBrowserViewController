@@ -1,0 +1,6 @@
+framework module Pods_JBImageBrowserViewController {
+  umbrella header "Pods-JBImageBrowserViewController-umbrella.h"
+
+  export *
+  module * { export * }
+}
