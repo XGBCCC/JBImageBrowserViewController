@@ -9,8 +9,6 @@
 import UIKit
 import Kingfisher
 
-
-
 public class JBImageBrowserViewController: UIViewController {
 
     private var imageList:[JBImage]!
@@ -31,7 +29,10 @@ public class JBImageBrowserViewController: UIViewController {
     //关闭按钮
     private var closeButton:UIButton?
     private var closeButtonSize = CGSize(width: 25, height: 25)
-    private let closeButtonPadding = 10.0
+    private let closeButtonPadding:CGFloat = 10.0
+    
+    //是否正在显示操作的View
+    private var isShowingActionView:Bool = true
     
     
     
@@ -84,6 +85,7 @@ public class JBImageBrowserViewController: UIViewController {
         
         closeButton = UIButton(frame: CGRect(origin: CGPoint(x: view.bounds.size.width - CGFloat(closeButtonPadding) - closeButtonSize.width, y: CGFloat(closeButtonPadding)), size: closeButtonSize))
         closeButton?.setImage(UIImage(named: "icon_close"), forState: .Normal)
+        closeButton?.addTarget(self, action: Selector("dismissSelf"), forControlEvents: .TouchUpInside)
         
         view.addSubview(closeButton!)
         
@@ -142,6 +144,13 @@ public class JBImageBrowserViewController: UIViewController {
     
     //MARK: - Tap gesture recognizer selector
     
+    func handleZoomScrollViewTap(gestureRecognizer:UITapGestureRecognizer){
+        
+        if let closeButton = closeButton {
+            self.setActionViewHidden(Bool(closeButton.alpha))
+        }
+        
+    }
 
     func handleZoomScrollViewDoubleTap(gestureRecognizer:UITapGestureRecognizer){
         if let scrollView = gestureRecognizer.view as? UIScrollView {
@@ -182,7 +191,10 @@ public class JBImageBrowserViewController: UIViewController {
                     let heightImageView = CGRectGetHeight(imageView.frame)
                     let contentOffsetY = scrollView.contentOffset.y
                     switch panGestureRecognizer.state {
-                    case .Began:break
+                    case .Began:
+                        if let _ = closeButton{
+                            self.setActionViewHidden(true)
+                        }
                     case .Changed:
                         //根据imageView移动的距离，设置透明
                         let yOffset = -panGestureRecognizer.translationInView(scrollView).y
@@ -238,6 +250,24 @@ public class JBImageBrowserViewController: UIViewController {
         
     }
     
+    //MARK: - Target - Action
+    func dismissSelf(){
+    
+        self.dismissViewControllerAnimated(true, completion: nil)
+        
+    }
+    
+    //MARK: - ActionView animation
+    private func setActionViewHidden(hidden:Bool){
+        
+        let closeButtonY = hidden ? closeButtonPadding-closeButtonSize.height : closeButtonPadding
+        
+        UIView.animateWithDuration(defaultAnimationDuration) { () -> Void in
+            self.closeButton?.frame = CGRect(origin: CGPoint(x: self.view.bounds.size.width - CGFloat(self.closeButtonPadding) - self.closeButtonSize.width, y: CGFloat(closeButtonY)), size: self.closeButtonSize)
+            self.closeButton?.alpha = CGFloat(NSNumber(bool: !hidden))
+        }
+    }
+    
 
 }
 
@@ -260,7 +290,9 @@ extension JBImageBrowserViewController{
         zoomScrollView.maximumZoomScale = maxZoomScale
         zoomScrollView.delegate = self
         
-        //点击，显示，缩放close按钮
+        //点击，显示，隐藏close按钮
+        let zoomScrollViewTapGestureRecognizer = UITapGestureRecognizer(target: self, action: Selector("handleZoomScrollViewTap:"))
+        zoomScrollView.addGestureRecognizer(zoomScrollViewTapGestureRecognizer)
         
         //双击缩放
         let zoomScrollViewDoubleTapGestureRecognizer = UITapGestureRecognizer(target: self, action: Selector("handleZoomScrollViewDoubleTap:"))
@@ -274,6 +306,9 @@ extension JBImageBrowserViewController{
         panGestureRecognizer.delegate = self
         panGestureRecognizer.maximumNumberOfTouches = 1
         zoomScrollView.addGestureRecognizer(panGestureRecognizer)
+        
+        zoomScrollViewTapGestureRecognizer.requireGestureRecognizerToFail(zoomScrollViewDoubleTapGestureRecognizer)
+        zoomScrollViewTapGestureRecognizer.requireGestureRecognizerToFail(panGestureRecognizer)
         
         return zoomScrollView
         
