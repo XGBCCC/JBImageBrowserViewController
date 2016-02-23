@@ -9,10 +9,6 @@
 import UIKit
 import Kingfisher
 
-enum panDirection{
-    case upDirection
-    case downDirection
-}
 
 
 public class JBImageBrowserViewController: UIViewController {
@@ -22,13 +18,21 @@ public class JBImageBrowserViewController: UIViewController {
     private let doubleTapZoomScale:CGFloat = 2.0
     private let maxZoomScale:CGFloat = 3.0
     private var defaultAnimationDuration = 0.15
-    private var transitionDirection:panDirection = .upDirection
     private var currentPageIndex = 0
     
     //加载失败占位图
     private var failedPlaceholderImage:UIImage?
     
     private var pageScrollView:UIScrollView
+    
+    //pan手势移动最大距离
+    private var translationMaxValue:CGFloat = 0
+    
+    //关闭按钮
+    private var closeButton:UIButton?
+    private var closeButtonSize = CGSize(width: 25, height: 25)
+    private let closeButtonPadding = 10.0
+    
     
     
     //MARK: - view life cycle
@@ -77,6 +81,12 @@ public class JBImageBrowserViewController: UIViewController {
         view.addSubview(self.pageScrollView)
         modalPresentationStyle = .OverFullScreen
         modalPresentationCapturesStatusBarAppearance = true
+        
+        closeButton = UIButton(frame: CGRect(origin: CGPoint(x: view.bounds.size.width - CGFloat(closeButtonPadding) - closeButtonSize.width, y: CGFloat(closeButtonPadding)), size: closeButtonSize))
+        closeButton?.setImage(UIImage(named: "icon_close"), forState: .Normal)
+        
+        view.addSubview(closeButton!)
+        
     }
     
     //MARK - UI configure
@@ -170,13 +180,13 @@ public class JBImageBrowserViewController: UIViewController {
                     
                     let yImageView = CGRectGetMinY(imageView.frame)
                     let heightImageView = CGRectGetHeight(imageView.frame)
-                    let contentOffsetY = self.pageScrollView.contentOffset.y
+                    let contentOffsetY = scrollView.contentOffset.y
                     switch panGestureRecognizer.state {
                     case .Began:break
                     case .Changed:
                         //根据imageView移动的距离，设置透明
                         let yOffset = -panGestureRecognizer.translationInView(scrollView).y
-                        self.pageScrollView.contentOffset = CGPoint(x: self.pageScrollView.contentOffset.x, y: yOffset)
+                        scrollView.contentOffset = CGPoint(x: scrollView.contentOffset.x, y: yOffset)
                         
                         
                         var alpha = 1-abs(contentOffsetY)/(heightImageView+yImageView)
@@ -185,13 +195,20 @@ public class JBImageBrowserViewController: UIViewController {
                         }
                         self.pageScrollView.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(alpha)
                         
+                        //获取移动的最大值。记录最大值的目的是判断，移动结束后的offset跟最大值相比，如果小于最大值，则表示是当前要重置回原位
+                        if abs(yOffset) > self.translationMaxValue{
+                            self.translationMaxValue = abs(yOffset)
+                        }
+                        
                     case .Ended:
                         //获取到imageView将要离开屏幕的方向，是上方消失，还是下方。然后设置相应的渐隐动画
                         var animationToContentOffsetY:CGFloat = 0
                         //如果image有一半已经移出界面，则移出界面,或者滑动的速度大于50
-                        let yVelocity = abs(panGestureRecognizer.velocityInView(scrollView).y)
+                        let yVelocity = panGestureRecognizer.velocityInView(scrollView).y
                         
-                        if heightImageView/2+yImageView<abs(contentOffsetY) || yVelocity>1000 {
+                        
+                        //需要判断，移动结束后的offset跟最大值相比，如果小于最大值，则表示是当前要重置回原位
+                        if heightImageView/2+yImageView<abs(contentOffsetY) || abs(yVelocity)>1000&&self.translationMaxValue<=abs(contentOffsetY) {
                             if contentOffsetY<0 {
                                 animationToContentOffsetY = -(heightImageView+yImageView)
                             }else{
@@ -201,14 +218,13 @@ public class JBImageBrowserViewController: UIViewController {
                         
                         UIView.animateWithDuration(defaultAnimationDuration, animations: { () -> Void in
                             
-                            self.pageScrollView.contentOffset = CGPoint(x: self.pageScrollView.contentOffset.x, y: animationToContentOffsetY)
+                            scrollView.contentOffset = CGPoint(x: scrollView.contentOffset.x, y: animationToContentOffsetY)
                             let backgroundColorAlpha:CGFloat = animationToContentOffsetY == 0 ? 1 :0
                             self.pageScrollView.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(backgroundColorAlpha)
                             
-                        }, completion: { (finished) -> Void in
-                                
+                        }, completion: { [weak self] (finished) -> Void in
                                 if animationToContentOffsetY != 0 {
-                                    self.dismissViewControllerAnimated(false, completion: nil)
+                                    self?.dismissViewControllerAnimated(false, completion: nil)
                                 }
                         })
                         
@@ -221,6 +237,7 @@ public class JBImageBrowserViewController: UIViewController {
         }
         
     }
+    
 
 }
 
@@ -243,6 +260,8 @@ extension JBImageBrowserViewController{
         zoomScrollView.maximumZoomScale = maxZoomScale
         zoomScrollView.delegate = self
         
+        //点击，显示，缩放close按钮
+        
         //双击缩放
         let zoomScrollViewDoubleTapGestureRecognizer = UITapGestureRecognizer(target: self, action: Selector("handleZoomScrollViewDoubleTap:"))
         zoomScrollViewDoubleTapGestureRecognizer.numberOfTapsRequired = 2
@@ -251,10 +270,10 @@ extension JBImageBrowserViewController{
         
         
         //pan手势，滑动消失
-        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: "handleZoomScrollViewPanGestureRecognizer:")
+        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: Selector("handleZoomScrollViewPanGestureRecognizer:"))
         panGestureRecognizer.delegate = self
+        panGestureRecognizer.maximumNumberOfTouches = 1
         zoomScrollView.addGestureRecognizer(panGestureRecognizer)
-        
         
         return zoomScrollView
         
@@ -364,7 +383,9 @@ extension JBImageBrowserViewController:UIScrollViewDelegate{
             
             if newPageIndex != currentPageIndex {
                 if let subScrollView = scrollView.subviews[currentPageIndex] as? UIScrollView {
-                    subScrollView.zoomScale = defaultZoomScale
+                    if subScrollView.zoomScale != defaultZoomScale {
+                        subScrollView.zoomScale = defaultZoomScale
+                    }
                 }
             }
             currentPageIndex = newPageIndex
@@ -382,7 +403,7 @@ extension JBImageBrowserViewController:UIGestureRecognizerDelegate{
     
     //手势是否确认启动
     public func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
-        
+
         //这里，我们只取Pan的手势，因为scrollView自己还有手势
         if gestureRecognizer.isMemberOfClass(UIPanGestureRecognizer){
             
@@ -390,10 +411,11 @@ extension JBImageBrowserViewController:UIGestureRecognizerDelegate{
                 
                 //只有没有缩放的情况下，才可以接收上下滑动
                 if let scrollView = gestureRecognizer.view as? UIScrollView {
+
                     if scrollView.zoomScale == defaultZoomScale{
                         let velocity = panGestureRecognizer.velocityInView(scrollView)
                         //只接受Y轴的滑动，不接受X轴的
-                        return fabs(velocity.y) > fabs(velocity.x);
+                        return fabs(velocity.y) > fabs(velocity.x)
                     }else{
                         return false
                     }
@@ -404,6 +426,8 @@ extension JBImageBrowserViewController:UIGestureRecognizerDelegate{
         
         return true
     }
+    
+
 }
 
 
