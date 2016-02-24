@@ -24,7 +24,7 @@ class ViewController: UIViewController {
         let failedImage = UIImage(named: "error_place_image")
         
         
-        let imageBrowserVC = JBImageBrowserViewController(frame:CGRect(x: 0, y: 0, width: CGRectGetWidth(self.view.bounds), height: CGRectGetHeight(self.view.bounds)),imageArray: [image_1,image_2,image_3],failedPlaceholderImage:failedImage)
+        let imageBrowserVC = JBImageBrowserViewController(imageArray: [image_1,image_2,image_3],failedPlaceholderImage:failedImage)
         
         self.presentViewController(imageBrowserVC, animated: true, completion: nil)
     }

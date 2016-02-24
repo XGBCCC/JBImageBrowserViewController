@@ -36,16 +36,15 @@ public class JBImageBrowserViewController: UIViewController {
     
     
     
-    //MARK: - view life cycle
-    
     /**
-    Initialize ImageBrowser with Images
-    
-    - parameter imageList: ListOfImage can be URL,Image
-    
-    - returns: JBImageBrowserViewController
-    */
-    public init(frame:CGRect,imageArray:[JBImage]!,failedPlaceholderImage:UIImage?) {
+     创建图片浏览器
+     
+     - parameter imageArray:             JBImage Array
+     - parameter failedPlaceholderImage: 加载失败后的占位图
+     
+     - returns: 图片浏览器实例
+     */
+    public init(imageArray:[JBImage]!,failedPlaceholderImage:UIImage?) {
         
         self.imageList = imageArray
         self.failedPlaceholderImage = failedPlaceholderImage
