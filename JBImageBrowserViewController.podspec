@@ -25,7 +25,7 @@ Pod::Spec.new do |s|
   #   * Write the description between the DESC delimiters below.
   #   * Finally, don't worry about the indent, CocoaPods strips it!
   s.description  = <<-DESC
-                    A image browser view controller like twitter. written in Swift
+                    A image browser view controller like twitter. written in Swift.
                    DESC
 
   s.homepage     = "https://github.com/XGBCCC/JBImageBrowserViewController"
@@ -91,7 +91,7 @@ Pod::Spec.new do |s|
   #  Not including the public_header_files will make all headers public.
   #
 
-  s.source_files  = "Example/*.swift"
+  s.source_files  = "JBImageBrowserViewController/*.swift"
 
 
   # s.public_header_files = "Classes/**/*.h"
@@ -130,9 +130,9 @@ Pod::Spec.new do |s|
   #  where they will only apply to your library. If you depend on other Podspecs
   #  you can include multiple dependencies to ensure it works.
 
-  # s.requires_arc = true
+   s.requires_arc = true
 
   # s.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
-  # s.dependency "JSONKit", "~> 1.4"
+  s.dependency "Kingfisher", "~> 2.0"
 
 end
