@@ -39,14 +39,14 @@ self.presentViewController(imageBrowserVC, animated: true, completion: nil)
 $ gem install cocoapods
 ```
 
-To integrate Kingfisher into your Xcode project using CocoaPods, specify it in your `Podfile`:
+To integrate JBImageBrowserViewController into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
 ``` ruby
 source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '8.0'
 use_frameworks!
 
-pod 'Kingfisher', '~> 2.0'
+pod 'JBImageBrowserViewController'
 ```
 
 Then, run the following command:
