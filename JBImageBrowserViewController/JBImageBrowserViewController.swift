@@ -27,9 +27,9 @@ public class JBImageBrowserViewController: UIViewController {
     private var translationMaxValue:CGFloat = 0
     
     //关闭按钮
-    private var closeButton:UIButton?
-    private var closeButtonSize = CGSize(width: 25, height: 25)
-    private let closeButtonPadding:CGFloat = 10.0
+    private var activeButton:UIButton?
+    private var activeButtonSize = CGSize(width: 25, height: 25)
+    private let activeButtonPadding:CGFloat = 10.0
     
     //是否正在显示操作的View
     private var isShowingActionView:Bool = true
@@ -82,11 +82,15 @@ public class JBImageBrowserViewController: UIViewController {
         modalPresentationStyle = .OverFullScreen
         modalPresentationCapturesStatusBarAppearance = true
         
-        closeButton = UIButton(frame: CGRect(origin: CGPoint(x: view.bounds.size.width - CGFloat(closeButtonPadding) - closeButtonSize.width, y: CGFloat(closeButtonPadding)), size: closeButtonSize))
-        closeButton?.setImage(UIImage(named: "icon_close"), forState: .Normal)
-        closeButton?.addTarget(self, action: Selector("dismissSelf"), forControlEvents: .TouchUpInside)
         
-        view.addSubview(closeButton!)
+        let bundlePath = NSBundle.mainBundle().resourcePath?.stringByAppendingString("/JBResources.bundle")
+        let bundle = NSBundle(path: bundlePath!)
+        let activeIcon = UIImage(named: "JBResources_item", inBundle: bundle, compatibleWithTraitCollection: nil)
+        activeButton = UIButton(frame: CGRect(origin: CGPoint(x: view.bounds.size.width - CGFloat(activeButtonPadding) - activeButtonSize.width, y: view.bounds.size.height - CGFloat(activeButtonPadding) - activeButtonSize.height), size: activeButtonSize))
+        activeButton?.setImage(activeIcon, forState: .Normal)
+        activeButton?.addTarget(self, action: Selector("activeButtonClicked"), forControlEvents: .TouchUpInside)
+        
+        view.addSubview(activeButton!)
         
     }
     
@@ -145,8 +149,8 @@ public class JBImageBrowserViewController: UIViewController {
     
     func handleZoomScrollViewTap(gestureRecognizer:UITapGestureRecognizer){
         
-        if let closeButton = closeButton {
-            self.setActionViewHidden(Bool(closeButton.alpha))
+        if let activeButton = activeButton {
+            self.setActionViewHidden(Bool(activeButton.alpha))
         }
         
     }
@@ -191,7 +195,7 @@ public class JBImageBrowserViewController: UIViewController {
                     let contentOffsetY = scrollView.contentOffset.y
                     switch panGestureRecognizer.state {
                     case .Began:
-                        if let _ = closeButton{
+                        if let _ = activeButton{
                             self.setActionViewHidden(true)
                         }
                     case .Changed:
@@ -219,7 +223,7 @@ public class JBImageBrowserViewController: UIViewController {
                         
                         
                         //需要判断，移动结束后的offset跟最大值相比，如果小于最大值，则表示是当前要重置回原位
-                        if heightImageView/2+yImageView<abs(contentOffsetY) || abs(yVelocity)>1000&&self.translationMaxValue<=abs(contentOffsetY) {
+                        if heightImageView/2+yImageView<abs(contentOffsetY) || abs(yVelocity)>100&&self.translationMaxValue<=abs(contentOffsetY) {
                             if contentOffsetY<0 {
                                 animationToContentOffsetY = -(heightImageView+yImageView)
                             }else{
@@ -250,21 +254,36 @@ public class JBImageBrowserViewController: UIViewController {
     }
     
     //MARK: - Target - Action
-    func dismissSelf(){
+    func activeButtonClicked(){
     
-        self.dismissViewControllerAnimated(true, completion: nil)
+        if let image = self.currentScollViewImage() {
+            let activityVC = UIActivityViewController(activityItems: [image], applicationActivities: nil)
+            self.presentViewController(activityVC, animated: true, completion: nil)
+        }
         
     }
     
     //MARK: - ActionView animation
     private func setActionViewHidden(hidden:Bool){
         
-        let closeButtonY = hidden ? closeButtonPadding-closeButtonSize.height : closeButtonPadding
+        let activeButtonY = hidden ? CGRectGetHeight(view.bounds) - activeButtonPadding : CGRectGetHeight(view.bounds) - activeButtonPadding - activeButtonSize.height
         
         UIView.animateWithDuration(defaultAnimationDuration) { () -> Void in
-            self.closeButton?.frame = CGRect(origin: CGPoint(x: self.view.bounds.size.width - CGFloat(self.closeButtonPadding) - self.closeButtonSize.width, y: CGFloat(closeButtonY)), size: self.closeButtonSize)
-            self.closeButton?.alpha = CGFloat(NSNumber(bool: !hidden))
+            self.activeButton?.frame = CGRect(origin: CGPoint(x: self.view.bounds.size.width - CGFloat(self.activeButtonPadding) - self.activeButtonSize.width, y: CGFloat(activeButtonY)), size: self.activeButtonSize)
+            self.activeButton?.alpha = CGFloat(NSNumber(bool: !hidden))
         }
+    }
+    
+    //MARK: - Func
+    private func currentScollViewImage() -> UIImage?{
+        if let currentScrollView = pageScrollView.subviews[currentPageIndex] as? UIScrollView {
+            if let currentImageView = currentScrollView.subviews[0] as? UIImageView {
+                if let currentImage = currentImageView.image {
+                    return currentImage
+                }
+            }
+        }
+        return nil
     }
     
 
@@ -381,7 +400,7 @@ extension JBImageBrowserViewController:UIScrollViewDelegate{
     
     //缩放后，重置Frame
     public func scrollViewDidZoom(scrollView: UIScrollView) {
-        
+        //获取到当前页面的图片
         if scrollView != self.pageScrollView {
             if let imageView = scrollView.subviews.first {
                 
@@ -405,6 +424,12 @@ extension JBImageBrowserViewController:UIScrollViewDelegate{
                     imageView.frame = imageViewFrame
                 }
             }
+        }else{
+            //如果是pageScrollView，则判断当前页面的Image是否已加载，已加载，则允许进行分享
+            activeButton?.enabled = false
+            if let _ = self.currentScollViewImage() {
+                activeButton?.enabled = true
+            }
         }
     }
     
@@ -423,6 +448,7 @@ extension JBImageBrowserViewController:UIScrollViewDelegate{
                 }
             }
             currentPageIndex = newPageIndex
+            
         }
         
     }

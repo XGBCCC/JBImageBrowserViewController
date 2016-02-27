@@ -18,7 +18,7 @@ class ViewController: UIViewController {
     @IBAction func buttonDidTouched(sender: UIButton) {
         
         
-        let image_1 = JBImage(url: NSURL(string: "http://images.apple.com/cn/chinese-new-year/images/style_large_2x.jpg"))
+        let image_1 = JBImage(url: NSURL(string: "http://images.apple.com/v/home/cj/images/promos/accessories_large_2x.jpg"))
         let image_2 = JBImage(filePathURL: NSBundle.mainBundle().URLForResource("IMG_5445", withExtension: "JPG"))
         let image_3 = JBImage(image: UIImage(named: "IMG_5429"))
         let failedImage = UIImage(named: "error_place_image")
