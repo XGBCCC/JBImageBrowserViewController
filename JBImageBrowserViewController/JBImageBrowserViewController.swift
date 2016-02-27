@@ -60,7 +60,7 @@ public class JBImageBrowserViewController: UIViewController {
     }
     
     
-    public override func prefersStatusBarHidden() -> Bool {
+    override public func prefersStatusBarHidden() -> Bool {
         return true
     }
     

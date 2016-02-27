@@ -16,22 +16,22 @@ public enum JBImageSourceType {
 
 public struct JBImage {
     
-    public var image:UIImage?
-    public var imageURL:NSURL?
-    public var filePathURL:NSURL?
-    public let sourceType:JBImageSourceType
+    var image:UIImage?
+    var imageURL:NSURL?
+    var filePathURL:NSURL?
+    let sourceType:JBImageSourceType
     
-    init(url:NSURL!){
+    public init(url:NSURL!){
         self.imageURL = url
         self.sourceType = .URL
     }
     
-    init(image:UIImage!){
+    public init(image:UIImage!){
         self.image = image
         self.sourceType = .Image
     }
     
-    init(filePathURL:NSURL!){
+    public init(filePathURL:NSURL!){
         self.filePathURL = filePathURL
         self.sourceType = .FilePath
     }
