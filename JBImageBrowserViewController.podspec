@@ -105,8 +105,8 @@ Pod::Spec.new do |s|
   #  non-essential files like tests, examples and documentation.
   #
 
-  # s.resource  = "icon.png"
-  # s.resources = "Resources/*.png"
+   s.resource  = "JBImageBroswerViewController/JBImageBrowserVC_Item_Icon@2x.png"
+   s.resources = "JBImageBroswerViewController/*.png"
 
   # s.preserve_paths = "FilesToSave", "MoreFilesToSave"
 

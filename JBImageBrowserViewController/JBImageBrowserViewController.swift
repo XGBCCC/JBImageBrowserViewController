@@ -28,7 +28,7 @@ public class JBImageBrowserViewController: UIViewController {
     
     //关闭按钮
     private var activeButton:UIButton?
-    private var activeButtonSize = CGSize(width: 25, height: 25)
+    private var activeButtonSize = CGSize(width: 50, height: 50)
     private let activeButtonPadding:CGFloat = 10.0
     
     //是否正在显示操作的View
@@ -82,12 +82,8 @@ public class JBImageBrowserViewController: UIViewController {
         modalPresentationStyle = .OverFullScreen
         modalPresentationCapturesStatusBarAppearance = true
         
-        
-        let bundlePath = NSBundle.mainBundle().resourcePath?.stringByAppendingString("/JBResources.bundle")
-        let bundle = NSBundle(path: bundlePath!)
-        let activeIcon = UIImage(named: "JBResources_item", inBundle: bundle, compatibleWithTraitCollection: nil)
         activeButton = UIButton(frame: CGRect(origin: CGPoint(x: view.bounds.size.width - CGFloat(activeButtonPadding) - activeButtonSize.width, y: view.bounds.size.height - CGFloat(activeButtonPadding) - activeButtonSize.height), size: activeButtonSize))
-        activeButton?.setImage(activeIcon, forState: .Normal)
+        activeButton?.setImage(UIImage(named: "JBImageBrowserVC_Item_Icon"), forState: .Normal)
         activeButton?.addTarget(self, action: Selector("activeButtonClicked"), forControlEvents: .TouchUpInside)
         
         view.addSubview(activeButton!)
