@@ -83,7 +83,7 @@ public class JBImageBrowserViewController: UIViewController {
         modalPresentationCapturesStatusBarAppearance = true
         
         activeButton = UIButton(frame: CGRect(origin: CGPoint(x: view.bounds.size.width - CGFloat(activeButtonPadding) - activeButtonSize.width, y: view.bounds.size.height - CGFloat(activeButtonPadding) - activeButtonSize.height), size: activeButtonSize))
-        activeButton?.setImage(UIImage(named: "JBImageBrowserVC_Item_Icon"), forState: .Normal)
+        activeButton?.setImage(UIImage(named: "JBImagesBrowserVC.bundle/imagesbrowser_item"), forState: .Normal)
         activeButton?.addTarget(self, action: Selector("activeButtonClicked"), forControlEvents: .TouchUpInside)
         
         view.addSubview(activeButton!)

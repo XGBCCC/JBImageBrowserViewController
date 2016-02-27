@@ -34,3 +34,6 @@ build/
 
 # 过滤SVN
 .svn
+
+# 过滤podspec
+.podspec
