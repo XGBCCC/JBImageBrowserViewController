@@ -17,7 +17,7 @@
 		585E97DD1C74B345000FEA80 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 585E97DB1C74B345000FEA80 /* Main.storyboard */; };
 		585E97DF1C74B345000FEA80 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 585E97DE1C74B345000FEA80 /* Assets.xcassets */; };
 		585E97E21C74B345000FEA80 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 585E97E01C74B345000FEA80 /* LaunchScreen.storyboard */; };
-		586DC98B1C81ED0100EDDA14 /* JBImageBrowserVC_Item_Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 586DC98A1C81ED0100EDDA14 /* JBImageBrowserVC_Item_Icon@2x.png */; };
+		58B545FE1C82081D002AAFC6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 58B545FD1C82081D002AAFC6 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,7 +35,7 @@
 		585E97E11C74B345000FEA80 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		585E97E31C74B345000FEA80 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		586DC97E1C81DD4F00EDDA14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		586DC98A1C81ED0100EDDA14 /* JBImageBrowserVC_Item_Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "JBImageBrowserVC_Item_Icon@2x.png"; sourceTree = "<group>"; };
+		58B545FD1C82081D002AAFC6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5EA3F10F7013BD9F8BB69AF3 /* Pods-JBImagesBrowserViewController.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JBImagesBrowserViewController.debug.xcconfig"; path = "Pods/Target Support Files/Pods-JBImagesBrowserViewController/Pods-JBImagesBrowserViewController.debug.xcconfig"; sourceTree = "<group>"; };
 		7E401840A36FF643184E30D2 /* Pods-JBImageBrowserViewController.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JBImageBrowserViewController.debug.xcconfig"; path = "Pods/Target Support Files/Pods-JBImageBrowserViewController/Pods-JBImageBrowserViewController.debug.xcconfig"; sourceTree = "<group>"; };
 		9891BFD6BF4E2C6C2FC7B60F /* Pods_JBImagesBrowserViewController.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_JBImagesBrowserViewController.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -68,7 +68,7 @@
 			children = (
 				584437EC1C7AD6F40094922A /* JBImage.swift */,
 				584437ED1C7AD6F40094922A /* JBImageBrowserViewController.swift */,
-				586DC98A1C81ED0100EDDA14 /* JBImageBrowserVC_Item_Icon@2x.png */,
+				58B545FD1C82081D002AAFC6 /* Assets.xcassets */,
 			);
 			name = JBImageBrowserViewController;
 			path = ../../JBImageBrowserViewController;
@@ -193,8 +193,8 @@
 			files = (
 				585E97E21C74B345000FEA80 /* LaunchScreen.storyboard in Resources */,
 				5811EA641C755FA00001B28A /* IMG_5445.JPG in Resources */,
-				586DC98B1C81ED0100EDDA14 /* JBImageBrowserVC_Item_Icon@2x.png in Resources */,
 				585E97DF1C74B345000FEA80 /* Assets.xcassets in Resources */,
+				58B545FE1C82081D002AAFC6 /* Assets.xcassets in Resources */,
 				585E97DD1C74B345000FEA80 /* Main.storyboard in Resources */,
 				5811EA661C755FA00001B28A /* IMG_5429.JPG in Resources */,
 			);

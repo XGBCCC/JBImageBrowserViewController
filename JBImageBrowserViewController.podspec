@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "JBImageBrowserViewController"
-  s.version      = "0.0.1"
+  s.version      = "0.0.2"
   s.summary      = "A image browser view controller like twitter. written in Swift"
 
   # This description is used to generate tags and improve search results.
@@ -105,8 +105,8 @@ Pod::Spec.new do |s|
   #  non-essential files like tests, examples and documentation.
   #
 
-   s.resource  = "JBImageBroswerViewController/JBImageBrowserVC_Item_Icon@2x.png"
-   s.resources = "JBImageBroswerViewController/*.png"
+  # s.resource  = "icon.png"
+   s.resources = "JBImageBrowserViewController/*.png"
 
   # s.preserve_paths = "FilesToSave", "MoreFilesToSave"
 
