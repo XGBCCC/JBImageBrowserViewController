@@ -9,6 +9,7 @@
 import UIKit
 import Kingfisher
 
+
 public class JBImageBrowserViewController: UIViewController {
 
     private var imageList:[JBImage]!
@@ -82,8 +83,9 @@ public class JBImageBrowserViewController: UIViewController {
         modalPresentationStyle = .OverFullScreen
         modalPresentationCapturesStatusBarAppearance = true
         
+        let activeImage = (UIImage(named: "JBImagesBrowserVC.bundle/imagesbrowser_item") != nil) ? UIImage(named: "JBImagesBrowserVC.bundle/imagesbrowser_item") : UIImage(named:"Frameworks/MJRefresh.framework/MJRefresh.bundle/imagesbrowser_item");
         activeButton = UIButton(frame: CGRect(origin: CGPoint(x: view.bounds.size.width - CGFloat(activeButtonPadding) - activeButtonSize.width, y: view.bounds.size.height - CGFloat(activeButtonPadding) - activeButtonSize.height), size: activeButtonSize))
-        activeButton?.setImage(UIImage(named: "JBImagesBrowserVC.bundle/imagesbrowser_item"), forState: .Normal)
+        activeButton?.setImage(activeImage, forState: .Normal)
         activeButton?.addTarget(self, action: Selector("activeButtonClicked"), forControlEvents: .TouchUpInside)
         
         view.addSubview(activeButton!)
