@@ -32,10 +32,6 @@ public class JBImageBrowserViewController: UIViewController {
     private var activeButtonSize = CGSize(width: 50, height: 50)
     private let activeButtonPadding:CGFloat = 10.0
     
-    //是否正在显示操作的View
-    private var isShowingActionView:Bool = true
-    
-    
     
     /**
      创建图片浏览器
@@ -147,9 +143,7 @@ public class JBImageBrowserViewController: UIViewController {
     
     func handleZoomScrollViewTap(gestureRecognizer:UITapGestureRecognizer){
         
-        if let activeButton = activeButton {
-            self.setActionViewHidden(Bool(activeButton.alpha))
-        }
+        self.dismissViewControllerAnimated(true, completion: nil)
         
     }
 
@@ -192,10 +186,7 @@ public class JBImageBrowserViewController: UIViewController {
                     let heightImageView = CGRectGetHeight(imageView.frame)
                     let contentOffsetY = scrollView.contentOffset.y
                     switch panGestureRecognizer.state {
-                    case .Began:
-                        if let _ = activeButton{
-                            self.setActionViewHidden(true)
-                        }
+                    case .Began:break
                     case .Changed:
                         //根据imageView移动的距离，设置透明
                         let yOffset = -panGestureRecognizer.translationInView(scrollView).y
@@ -259,17 +250,6 @@ public class JBImageBrowserViewController: UIViewController {
             self.presentViewController(activityVC, animated: true, completion: nil)
         }
         
-    }
-    
-    //MARK: - ActionView animation
-    private func setActionViewHidden(hidden:Bool){
-        
-        let activeButtonY = hidden ? CGRectGetHeight(view.bounds) - activeButtonPadding : CGRectGetHeight(view.bounds) - activeButtonPadding - activeButtonSize.height
-        
-        UIView.animateWithDuration(defaultAnimationDuration) { () -> Void in
-            self.activeButton?.frame = CGRect(origin: CGPoint(x: self.view.bounds.size.width - CGFloat(self.activeButtonPadding) - self.activeButtonSize.width, y: CGFloat(activeButtonY)), size: self.activeButtonSize)
-            self.activeButton?.alpha = CGFloat(NSNumber(bool: !hidden))
-        }
     }
     
     //MARK: - Func
