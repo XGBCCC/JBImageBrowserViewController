@@ -3,7 +3,7 @@ JBImageBrowserViewController is a library enables a user to present images in fu
 
 Thanks For [ImageViewer](https://github.com/MailOnline/ImageViewer), [Kingfisher](https://github.com/onevcat/Kingfisher) and [MWPhotoBrowser](https://github.com/mwaterfall/MWPhotoBrowser). I had reference with them.
 
-<a href="http://cocoadocs.org/docsets/JBImageBrowserController"><img src="https://img.shields.io/cocoapods/v/JBImageBrowserController.svg?style=flat"></a>
+[![CocoaPods](https://img.shields.io/cocoapods/v/JBImageBrowserViewController.svg)](https://github.com/XGBCCC/JBImageBrowserViewController)
 
 ![](Documentation/preview.gif)
 
