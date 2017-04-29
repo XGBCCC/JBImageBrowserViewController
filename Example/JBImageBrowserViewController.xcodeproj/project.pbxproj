@@ -136,12 +136,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 585E97E61C74B345000FEA80 /* Build configuration list for PBXNativeTarget "JBImageBrowserViewController" */;
 			buildPhases = (
-				7FF43EFADF4F691C6655C307 /* Check Pods Manifest.lock */,
+				7FF43EFADF4F691C6655C307 /* [CP] Check Pods Manifest.lock */,
 				585E97D01C74B345000FEA80 /* Sources */,
 				585E97D11C74B345000FEA80 /* Frameworks */,
 				585E97D21C74B345000FEA80 /* Resources */,
-				BD454646D94B90BB00E26FF7 /* Embed Pods Frameworks */,
-				18506190CA5F7DE52FF47C01 /* Copy Pods Resources */,
+				BD454646D94B90BB00E26FF7 /* [CP] Embed Pods Frameworks */,
+				18506190CA5F7DE52FF47C01 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -165,6 +165,7 @@
 					585E97D31C74B345000FEA80 = {
 						CreatedOnToolsVersion = 7.2.1;
 						DevelopmentTeam = SE376E2E7G;
+						LastSwiftMigration = 0830;
 					};
 				};
 			};
@@ -203,14 +204,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		18506190CA5F7DE52FF47C01 /* Copy Pods Resources */ = {
+		18506190CA5F7DE52FF47C01 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy Pods Resources";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -218,29 +219,29 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-JBImageBrowserViewController/Pods-JBImageBrowserViewController-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		7FF43EFADF4F691C6655C307 /* Check Pods Manifest.lock */ = {
+		7FF43EFADF4F691C6655C307 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Check Pods Manifest.lock";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		BD454646D94B90BB00E26FF7 /* Embed Pods Frameworks */ = {
+		BD454646D94B90BB00E26FF7 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Embed Pods Frameworks";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -378,6 +379,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = xgbccc.demo.JBImageBrowserViewController;
 				PRODUCT_NAME = JBImageBrowserViewController;
 				PROVISIONING_PROFILE = "";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -392,6 +394,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = xgbccc.demo.JBImageBrowserViewController;
 				PRODUCT_NAME = JBImageBrowserViewController;
 				PROVISIONING_PROFILE = "";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};

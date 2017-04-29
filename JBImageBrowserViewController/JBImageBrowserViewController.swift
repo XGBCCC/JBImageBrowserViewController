@@ -10,27 +10,27 @@ import UIKit
 import Kingfisher
 
 
-public class JBImageBrowserViewController: UIViewController {
+open class JBImageBrowserViewController: UIViewController {
 
-    private var imageList:[JBImage]!
-    private let defaultZoomScale:CGFloat = 1.0
-    private let doubleTapZoomScale:CGFloat = 2.0
-    private let maxZoomScale:CGFloat = 3.0
-    private var defaultAnimationDuration = 0.15
-    private var currentPageIndex = 0
+    fileprivate var imageList:[JBImage]!
+    fileprivate let defaultZoomScale:CGFloat = 1.0
+    fileprivate let doubleTapZoomScale:CGFloat = 2.0
+    fileprivate let maxZoomScale:CGFloat = 3.0
+    fileprivate var defaultAnimationDuration = 0.15
+    fileprivate var currentPageIndex = 0
     
     //加载失败占位图
-    private var failedPlaceholderImage:UIImage?
+    fileprivate var failedPlaceholderImage:UIImage?
     
-    private var pageScrollView:UIScrollView
+    fileprivate var pageScrollView:UIScrollView
     
     //pan手势移动最大距离
-    private var translationMaxValue:CGFloat = 0
+    fileprivate var translationMaxValue:CGFloat = 0
     
     //关闭按钮
-    private var activeButton:UIButton?
-    private var activeButtonSize = CGSize(width: 50, height: 50)
-    private let activeButtonPadding:CGFloat = 10.0
+    fileprivate var activeButton:UIButton?
+    fileprivate var activeButtonSize = CGSize(width: 50, height: 50)
+    fileprivate let activeButtonPadding:CGFloat = 10.0
     
     
     /**
@@ -57,7 +57,7 @@ public class JBImageBrowserViewController: UIViewController {
     }
     
     
-    override public func prefersStatusBarHidden() -> Bool {
+    override open var prefersStatusBarHidden : Bool {
         return true
     }
     
@@ -66,23 +66,23 @@ public class JBImageBrowserViewController: UIViewController {
     
     func setupUserInterface(){
         
-        pageScrollView.frame = CGRect(origin: CGPoint(x: 0,y: 0), size: CGSize(width: CGRectGetWidth(self.view.bounds), height: CGRectGetHeight(self.view.bounds)))
-        pageScrollView.backgroundColor = UIColor.blackColor()
+        pageScrollView.frame = CGRect(origin: CGPoint(x: 0,y: 0), size: CGSize(width: self.view.bounds.width, height: self.view.bounds.height))
+        pageScrollView.backgroundColor = UIColor.black
         pageScrollView.showsHorizontalScrollIndicator = false
         pageScrollView.showsVerticalScrollIndicator = false
-        pageScrollView.pagingEnabled = true
+        pageScrollView.isPagingEnabled = true
         pageScrollView.bouncesZoom = false
         pageScrollView.delegate = self
-        pageScrollView.contentSize = CGSizeMake(CGRectGetWidth(self.pageScrollView.bounds)*CGFloat(imageList.count), CGRectGetHeight(self.pageScrollView.bounds))
+        pageScrollView.contentSize = CGSize(width: self.pageScrollView.bounds.width*CGFloat(imageList.count), height: self.pageScrollView.bounds.height)
         
         view.addSubview(self.pageScrollView)
-        modalPresentationStyle = .OverFullScreen
+        modalPresentationStyle = .overFullScreen
         modalPresentationCapturesStatusBarAppearance = true
         
         let activeImage = (UIImage(named: "JBImagesBrowserVC.bundle/imagesbrowser_item") != nil) ? UIImage(named: "JBImagesBrowserVC.bundle/imagesbrowser_item") : UIImage(named:"Frameworks/JBImageBrowserViewController.framework/JBImagesBrowserVC.bundle/imagesbrowser_item");
         activeButton = UIButton(frame: CGRect(origin: CGPoint(x: view.bounds.size.width - CGFloat(activeButtonPadding) - activeButtonSize.width, y: view.bounds.size.height - CGFloat(activeButtonPadding) - activeButtonSize.height), size: activeButtonSize))
-        activeButton?.setImage(activeImage, forState: .Normal)
-        activeButton?.addTarget(self, action: Selector("activeButtonClicked"), forControlEvents: .TouchUpInside)
+        activeButton?.setImage(activeImage, for: UIControlState())
+        activeButton?.addTarget(self, action: #selector(JBImageBrowserViewController.activeButtonClicked), for: .touchUpInside)
         
         view.addSubview(activeButton!)
         
@@ -100,29 +100,29 @@ public class JBImageBrowserViewController: UIViewController {
             pageScrollView.addSubview(zoomScrollView)
             
             switch(item.sourceType){
-                case .FilePath:
+                case .filePath:
                     if let filePathURL = item.filePathURL {
                         
-                        guard filePathURL.fileURL else{
+                        guard filePathURL.isFileURL else{
                             continue
                         }
                         
-                        if let image = UIImage(contentsOfFile:filePathURL.path!) {
+                        if let image = UIImage(contentsOfFile:filePathURL.path) {
                             let imageView = imageViewForZoomScrollView(image)
                             zoomScrollView.addSubview(imageView)
                         }
                     }
-                case .Image:
+                case .image:
                     if let image = item.image {
                         let imageView = imageViewForZoomScrollView(image)
                         zoomScrollView.addSubview(imageView)
                     }
             
-                case .URL:
+                case .url:
                     if let url = item.imageURL{
                         //loading
-                        let loadingView = UIActivityIndicatorView(activityIndicatorStyle:.White)
-                        loadingView.center = CGPoint(x: CGRectGetWidth(zoomScrollView.bounds)/2, y:CGRectGetHeight(zoomScrollView.bounds)/2)
+                        let loadingView = UIActivityIndicatorView(activityIndicatorStyle:.white)
+                        loadingView.center = CGPoint(x: zoomScrollView.bounds.width/2, y:zoomScrollView.bounds.height/2)
                         zoomScrollView.addSubview(loadingView)
                         loadingView.startAnimating()
                         
@@ -141,13 +141,13 @@ public class JBImageBrowserViewController: UIViewController {
     
     //MARK: - Tap gesture recognizer selector
     
-    func handleZoomScrollViewTap(gestureRecognizer:UITapGestureRecognizer){
+    func handleZoomScrollViewTap(_ gestureRecognizer:UITapGestureRecognizer){
         
-        self.dismissViewControllerAnimated(true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
         
     }
 
-    func handleZoomScrollViewDoubleTap(gestureRecognizer:UITapGestureRecognizer){
+    func handleZoomScrollViewDoubleTap(_ gestureRecognizer:UITapGestureRecognizer){
         if let scrollView = gestureRecognizer.view as? UIScrollView {
             
             if let imageView = scrollView.subviews.first as? UIImageView {
@@ -158,12 +158,12 @@ public class JBImageBrowserViewController: UIViewController {
                     scrollView.setZoomScale(zoomScale, animated: true)
                 }else{
 
-                    let xWidth = CGRectGetWidth(scrollView.bounds)/zoomScale
-                    let yHeight = CGRectGetHeight(scrollView.bounds)/zoomScale
-                    let x:CGFloat = gestureRecognizer.locationInView(imageView).x-xWidth/2
-                    let y:CGFloat = gestureRecognizer.locationInView(imageView).y-yHeight/2
+                    let xWidth = scrollView.bounds.width/zoomScale
+                    let yHeight = scrollView.bounds.height/zoomScale
+                    let x:CGFloat = gestureRecognizer.location(in: imageView).x-xWidth/2
+                    let y:CGFloat = gestureRecognizer.location(in: imageView).y-yHeight/2
                     
-                    scrollView.zoomToRect(CGRect(origin: CGPoint(x: x,y: y), size: CGSize(width: xWidth, height: yHeight)), animated: true)
+                    scrollView.zoom(to: CGRect(origin: CGPoint(x: x,y: y), size: CGSize(width: xWidth, height: yHeight)), animated: true)
 
 
                 }
@@ -173,7 +173,7 @@ public class JBImageBrowserViewController: UIViewController {
         }
     }
     
-    func handleZoomScrollViewPanGestureRecognizer(panGestureRecognizer:UIPanGestureRecognizer){
+    func handleZoomScrollViewPanGestureRecognizer(_ panGestureRecognizer:UIPanGestureRecognizer){
         
         
         if let scrollView = panGestureRecognizer.view as? UIScrollView {
@@ -182,14 +182,14 @@ public class JBImageBrowserViewController: UIViewController {
                 
                 if let imageView = scrollView.subviews.first {
                     
-                    let yImageView = CGRectGetMinY(imageView.frame)
-                    let heightImageView = CGRectGetHeight(imageView.frame)
+                    let yImageView = imageView.frame.minY
+                    let heightImageView = imageView.frame.height
                     let contentOffsetY = scrollView.contentOffset.y
                     switch panGestureRecognizer.state {
-                    case .Began:break
-                    case .Changed:
+                    case .began:break
+                    case .changed:
                         //根据imageView移动的距离，设置透明
-                        let yOffset = -panGestureRecognizer.translationInView(scrollView).y
+                        let yOffset = -panGestureRecognizer.translation(in: scrollView).y
                         scrollView.contentOffset = CGPoint(x: scrollView.contentOffset.x, y: yOffset)
                         
                         
@@ -197,18 +197,18 @@ public class JBImageBrowserViewController: UIViewController {
                         if alpha<0.5{
                             alpha = 0.5
                         }
-                        self.pageScrollView.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(alpha)
+                        self.pageScrollView.backgroundColor = UIColor.black.withAlphaComponent(alpha)
                         
                         //获取移动的最大值。记录最大值的目的是判断，移动结束后的offset跟最大值相比，如果小于最大值，则表示是当前要重置回原位
                         if abs(yOffset) > self.translationMaxValue{
                             self.translationMaxValue = abs(yOffset)
                         }
                         
-                    case .Ended:
+                    case .ended:
                         //获取到imageView将要离开屏幕的方向，是上方消失，还是下方。然后设置相应的渐隐动画
                         var animationToContentOffsetY:CGFloat = 0
                         //如果image有一半已经移出界面，则移出界面,或者滑动的速度大于50
-                        let yVelocity = panGestureRecognizer.velocityInView(scrollView).y
+                        let yVelocity = panGestureRecognizer.velocity(in: scrollView).y
                         
                         
                         //需要判断，移动结束后的offset跟最大值相比，如果小于最大值，则表示是当前要重置回原位
@@ -220,15 +220,15 @@ public class JBImageBrowserViewController: UIViewController {
                             }
                         }
                         
-                        UIView.animateWithDuration(defaultAnimationDuration, animations: { () -> Void in
+                        UIView.animate(withDuration: defaultAnimationDuration, animations: { () -> Void in
                             
                             scrollView.contentOffset = CGPoint(x: scrollView.contentOffset.x, y: animationToContentOffsetY)
                             let backgroundColorAlpha:CGFloat = animationToContentOffsetY == 0 ? 1 :0
-                            self.pageScrollView.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(backgroundColorAlpha)
+                            self.pageScrollView.backgroundColor = UIColor.black.withAlphaComponent(backgroundColorAlpha)
                             
                         }, completion: { [weak self] (finished) -> Void in
                                 if animationToContentOffsetY != 0 {
-                                    self?.dismissViewControllerAnimated(false, completion: nil)
+                                    self?.dismiss(animated: false, completion: nil)
                                 }
                         })
                         
@@ -247,13 +247,13 @@ public class JBImageBrowserViewController: UIViewController {
     
         if let image = self.currentScollViewImage() {
             let activityVC = UIActivityViewController(activityItems: [image], applicationActivities: nil)
-            self.presentViewController(activityVC, animated: true, completion: nil)
+            self.present(activityVC, animated: true, completion: nil)
         }
         
     }
     
     //MARK: - Func
-    private func currentScollViewImage() -> UIImage?{
+    fileprivate func currentScollViewImage() -> UIImage?{
         if let currentScrollView = pageScrollView.subviews[currentPageIndex] as? UIScrollView {
             if let currentImageView = currentScrollView.subviews[0] as? UIImageView {
                 if let currentImage = currentImageView.image {
@@ -272,9 +272,9 @@ public class JBImageBrowserViewController: UIViewController {
 extension JBImageBrowserViewController{
     
     //生成zoomScrollView
-    private func zoomScrollView(index:Int) -> UIScrollView{
+    fileprivate func zoomScrollView(_ index:Int) -> UIScrollView{
         
-        let frame = CGRect(origin: CGPoint(x: CGFloat(index)*CGRectGetWidth(self.pageScrollView.bounds), y: 0), size: self.pageScrollView.bounds.size)
+        let frame = CGRect(origin: CGPoint(x: CGFloat(index)*self.pageScrollView.bounds.width, y: 0), size: self.pageScrollView.bounds.size)
         
         let zoomScrollView = UIScrollView(frame: frame)
         zoomScrollView.contentSize = frame.size
@@ -287,33 +287,33 @@ extension JBImageBrowserViewController{
         zoomScrollView.delegate = self
         
         //点击，显示，隐藏close按钮
-        let zoomScrollViewTapGestureRecognizer = UITapGestureRecognizer(target: self, action: Selector("handleZoomScrollViewTap:"))
+        let zoomScrollViewTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(JBImageBrowserViewController.handleZoomScrollViewTap(_:)))
         zoomScrollView.addGestureRecognizer(zoomScrollViewTapGestureRecognizer)
         
         //双击缩放
-        let zoomScrollViewDoubleTapGestureRecognizer = UITapGestureRecognizer(target: self, action: Selector("handleZoomScrollViewDoubleTap:"))
+        let zoomScrollViewDoubleTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(JBImageBrowserViewController.handleZoomScrollViewDoubleTap(_:)))
         zoomScrollViewDoubleTapGestureRecognizer.numberOfTapsRequired = 2
         zoomScrollViewDoubleTapGestureRecognizer.numberOfTouchesRequired = 1
         zoomScrollView.addGestureRecognizer(zoomScrollViewDoubleTapGestureRecognizer)
         
         
         //pan手势，滑动消失
-        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: Selector("handleZoomScrollViewPanGestureRecognizer:"))
+        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(JBImageBrowserViewController.handleZoomScrollViewPanGestureRecognizer(_:)))
         panGestureRecognizer.delegate = self
         panGestureRecognizer.maximumNumberOfTouches = 1
         zoomScrollView.addGestureRecognizer(panGestureRecognizer)
         
-        zoomScrollViewTapGestureRecognizer.requireGestureRecognizerToFail(zoomScrollViewDoubleTapGestureRecognizer)
-        zoomScrollViewTapGestureRecognizer.requireGestureRecognizerToFail(panGestureRecognizer)
+        zoomScrollViewTapGestureRecognizer.require(toFail: zoomScrollViewDoubleTapGestureRecognizer)
+        zoomScrollViewTapGestureRecognizer.require(toFail: panGestureRecognizer)
         
         return zoomScrollView
         
     }
     
     //根据image，自动设置，生成UIImage，并设置好了Frame
-    private func imageViewForZoomScrollView(image:UIImage) -> UIImageView {
+    fileprivate func imageViewForZoomScrollView(_ image:UIImage) -> UIImageView {
         let imageView = UIImageView()
-        imageView.contentMode = .ScaleAspectFit
+        imageView.contentMode = .scaleAspectFit
         
         //设置imageView的frame，呈现在屏幕中间
         imageView.frame = imageViewFrameForZoomScrollView(image)
@@ -322,33 +322,31 @@ extension JBImageBrowserViewController{
         return imageView
     }
     
-    private func imageViewForZoomScrollView(url:NSURL,progressBlock:DownloadProgressBlock,completionHandler:CompletionHandler) -> UIImageView {
+    fileprivate func imageViewForZoomScrollView(_ url:URL,progressBlock:DownloadProgressBlock,completionHandler:@escaping CompletionHandler) -> UIImageView {
         let imageView = UIImageView()
-        imageView.contentMode = .ScaleAspectFit
+        imageView.contentMode = .scaleAspectFit
         
-        imageView.kf_setImageWithURL(url, placeholderImage: nil, optionsInfo: nil, progressBlock: progressBlock) { [weak self,weak imageView] (image, error, cacheType, imageURL) -> () in
+        imageView.kf.setImage(with: ImageResource.init(downloadURL: url), placeholder: nil, options: nil, progressBlock: nil) { [weak self,weak imageView] (image, error, cacheType, imageURL) in
             
             if let imageView = imageView {
                 if image == nil {
                     imageView.image = self?.failedPlaceholderImage
                 }
                 imageView.frame = (self?.imageViewFrameForZoomScrollView(imageView.image))!
-                completionHandler(image: image,error: error,cacheType: cacheType,imageURL: imageURL)
+                completionHandler(image,error,cacheType,imageURL)
             }
-            
-            
         }
         
         return imageView
     }
     
     //根据image的大小，获取imageView在ZoomScrollView的适合的大小
-    private func imageViewFrameForZoomScrollView(image:UIImage?)->CGRect{
+    fileprivate func imageViewFrameForZoomScrollView(_ image:UIImage?)->CGRect{
         
         if let image = image {
         
-            let xScale:CGFloat = CGRectGetWidth(self.pageScrollView.bounds)/image.size.width
-            let yScale:CGFloat = CGRectGetHeight(self.pageScrollView.bounds)/image.size.height
+            let xScale:CGFloat = self.pageScrollView.bounds.width/image.size.width
+            let yScale:CGFloat = self.pageScrollView.bounds.height/image.size.height
             
             let minScale = min(min(1.0, xScale),yScale)
             
@@ -357,9 +355,9 @@ extension JBImageBrowserViewController{
             let imageHeight = image.size.height*minScale
             
             //设置imageView的frame，呈现在屏幕中间
-            return CGRect(origin: CGPoint(x:(CGRectGetWidth(self.pageScrollView.bounds)-imageWidth)/2,y:(CGRectGetHeight(self.pageScrollView.bounds)-imageHeight)/2), size: CGSize(width: imageWidth, height: imageHeight))
+            return CGRect(origin: CGPoint(x:(self.pageScrollView.bounds.width-imageWidth)/2,y:(self.pageScrollView.bounds.height-imageHeight)/2), size: CGSize(width: imageWidth, height: imageHeight))
         }else {
-            return CGRectZero
+            return CGRect.zero
         }
     }
 }
@@ -369,7 +367,7 @@ extension JBImageBrowserViewController{
 extension JBImageBrowserViewController:UIScrollViewDelegate{
     
     //返回需要缩放的View
-    public func viewForZoomingInScrollView(scrollView: UIScrollView) -> UIView? {
+    public func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         if scrollView != self.pageScrollView {
             return scrollView.subviews.first
         }
@@ -377,7 +375,7 @@ extension JBImageBrowserViewController:UIScrollViewDelegate{
     }
     
     //缩放后，重置Frame
-    public func scrollViewDidZoom(scrollView: UIScrollView) {
+    public func scrollViewDidZoom(_ scrollView: UIScrollView) {
         //获取到当前页面的图片
         if scrollView != self.pageScrollView {
             if let imageView = scrollView.subviews.first {
@@ -398,25 +396,25 @@ extension JBImageBrowserViewController:UIScrollViewDelegate{
                     imageViewFrame.origin.y = 0
                 }
                 
-                if !CGRectEqualToRect(imageView.frame, imageViewFrame){
+                if !imageView.frame.equalTo(imageViewFrame){
                     imageView.frame = imageViewFrame
                 }
             }
         }else{
             //如果是pageScrollView，则判断当前页面的Image是否已加载，已加载，则允许进行分享
-            activeButton?.enabled = false
+            activeButton?.isEnabled = false
             if let _ = self.currentScollViewImage() {
-                activeButton?.enabled = true
+                activeButton?.isEnabled = true
             }
         }
     }
     
     
-    public func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
+    public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
     
         if scrollView == self.pageScrollView {
             //如果scrollView去往新的页面了，则重置scrollView的缩放
-            let newPageIndex = Int(scrollView.contentOffset.x/CGRectGetWidth(scrollView.bounds))
+            let newPageIndex = Int(scrollView.contentOffset.x/scrollView.bounds.width)
             
             if newPageIndex != currentPageIndex {
                 if let subScrollView = scrollView.subviews[currentPageIndex] as? UIScrollView {
@@ -440,10 +438,10 @@ extension JBImageBrowserViewController:UIScrollViewDelegate{
 extension JBImageBrowserViewController:UIGestureRecognizerDelegate{
     
     //手势是否确认启动
-    public func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
+    public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
 
         //这里，我们只取Pan的手势，因为scrollView自己还有手势
-        if gestureRecognizer.isMemberOfClass(UIPanGestureRecognizer){
+        if gestureRecognizer.isMember(of: UIPanGestureRecognizer.self){
             
             if let panGestureRecognizer = gestureRecognizer as? UIPanGestureRecognizer {
                 
@@ -451,7 +449,7 @@ extension JBImageBrowserViewController:UIGestureRecognizerDelegate{
                 if let scrollView = gestureRecognizer.view as? UIScrollView {
 
                     if scrollView.zoomScale == defaultZoomScale{
-                        let velocity = panGestureRecognizer.velocityInView(scrollView)
+                        let velocity = panGestureRecognizer.velocity(in: scrollView)
                         //只接受Y轴的滑动，不接受X轴的
                         return fabs(velocity.y) > fabs(velocity.x)
                     }else{

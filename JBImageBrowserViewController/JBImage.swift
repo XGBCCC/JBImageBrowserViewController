@@ -9,31 +9,31 @@
 import UIKit
 
 public enum JBImageSourceType {
-    case Image
-    case URL
-    case FilePath
+    case image
+    case url
+    case filePath
 }
 
 public struct JBImage {
     
     var image:UIImage?
-    var imageURL:NSURL?
-    var filePathURL:NSURL?
+    var imageURL:URL?
+    var filePathURL:URL?
     let sourceType:JBImageSourceType
     
-    public init(url:NSURL!){
+    public init(url:URL!){
         self.imageURL = url
-        self.sourceType = .URL
+        self.sourceType = .url
     }
     
     public init(image:UIImage!){
         self.image = image
-        self.sourceType = .Image
+        self.sourceType = .image
     }
     
-    public init(filePathURL:NSURL!){
+    public init(filePathURL:URL!){
         self.filePathURL = filePathURL
-        self.sourceType = .FilePath
+        self.sourceType = .filePath
     }
     
     
